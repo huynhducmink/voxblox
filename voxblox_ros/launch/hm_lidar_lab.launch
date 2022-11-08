@@ -1,0 +1,39 @@
+<launch>
+  <arg name="play_bag" default="false" />
+  <arg name="bag_file" default="/path/to/data.bag" />
+
+  <!-- Download the dataset here: https://projects.asl.ethz.ch/datasets/doku.php?id=iros2017 -->
+
+  <node name="player" pkg="rosbag" type="play" output="screen" args="-r 1.0 --clock $(arg bag_file)" if="$(arg play_bag)" />
+
+  <!-- <node pkg="tf" type="static_transform_publisher" name="world_to_map_tf" args="0 0 0 0 0 0 world map 100" /> -->
+  <!-- <node pkg="tf" type="static_transform_publisher" name="world_to_camera_init_tf" args="0 0 0 0 0 0 world camera_init 100" /> -->
+  <!-- <node pkg="tf" type="static_transform_publisher" name="os_sensor_to_aft_mapped_tf" args="0 0 0 0 0 0 aft_mapped os_sensor 100" /> -->
+
+  <node name="voxblox_node" pkg="voxblox_ros" type="tsdf_server" output="screen" args="-alsologtostderr" clear_params="true">
+
+    <remap from="pointcloud" to="/ouster/points" />
+    <!-- <remap from="transform" to="/lidar_transformstamped" /> -->
+
+    <param name="min_time_between_msgs_sec" value="0.001" />
+    <param name="verbose" value="true" />
+    <param name="max_block_distance_from_body" value="50" />
+
+    <param name="method" value="fast" />
+    <param name="tsdf_voxel_size" value="0.1" />
+    <param name="tsdf_voxels_per_side" value="16" />
+
+    <param name="use_tf_transforms" value="true" />
+    <!-- <param name="world_frame" value="/world" /> -->
+    <!-- <param name="sensor_frame" value="/os_sensor" /> -->
+
+    <param name="voxel_carving_enabled" value="true" />
+    <param name="color_mode" value="normals" />
+    <param name="update_mesh_every_n_sec" value="1" />
+    <param name="use_const_weight" value="true" />
+    <param name="allow_clear" value="true" />
+    <param name="mesh_filename" value="$(find voxblox_ros)/mesh_results/flightmare_depth_cam.ply" />
+
+  </node>
+
+</launch>
