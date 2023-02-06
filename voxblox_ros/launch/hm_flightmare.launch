@@ -7,7 +7,7 @@
 
   <node name="player" pkg="rosbag" type="play" output="screen" args="-r 1.0 --clock $(arg bag_file)" if="$(arg play_bag)"/>
 
-	<node pkg="tf" type="static_transform_publisher" name="world_to_map_tf" args="0 0 0 0 0 0 world map 100" />
+  <node pkg="tf" type="static_transform_publisher" name="world_to_map_tf" args="0 0 0 0 0 0 world map 100" />
 
    <node name="voxblox_node" pkg="voxblox_ros" type="tsdf_server" output="screen" args="-alsologtostderr" clear_params="true">
     <remap from="pointcloud" to="/hmpoints"/>
@@ -27,5 +27,8 @@
 		<param name="world_frame" value="world" />
 		<param name="sensor_frame" value="camera_link" />
   </node>
+
+    <node name="rvizvisualisation" pkg="rviz" type="rviz" output="log" args="-d $(find voxblox_ros)/cfg/config2.rviz" />
+
 
 </launch>
